@@ -1,0 +1,95 @@
+---
+swagger: "2.0"
+info:
+  description: "Move your app forward with the Uber API"
+  version: "1.0.0"
+  title: "Uber API"
+host: "api.uber.com"
+basePath: "/v1"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /modeldata:
+    get:
+      tags:
+      - "default"
+      description: "An array of model data"
+      operationId: "controllers.default_controller.modeldata_get"
+      parameters: []
+      responses:
+        200:
+          description: "An array of model data"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ModelData"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /writemodel:
+    post:
+      tags:
+      - "default"
+      operationId: "controllers.default_controller.writemodel_post"
+      parameters:
+      - in: "body"
+        name: "modelDelta"
+        description: "Position transform delta of the model."
+        required: false
+        schema:
+          $ref: "#/definitions/ModelDelta"
+      responses:
+        200:
+          description: "write model deltas to json file"
+          schema:
+            $ref: "#/definitions/ModelDelta"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  ModelData:
+    type: "object"
+    properties:
+      modelName:
+        type: "string"
+        description: "Name of model."
+      modelPath:
+        type: "string"
+        description: "Location of model"
+      modelOffset:
+        $ref: "#/definitions/Vector3"
+  Vector3:
+    type: "object"
+    properties:
+      x:
+        type: "number"
+        format: "float"
+      y:
+        type: "number"
+        format: "float"
+      z:
+        type: "number"
+        format: "float"
+  ModelDelta:
+    type: "object"
+    properties:
+      positionDelta:
+        $ref: "#/definitions/Vector3"
+      rotationDelta:
+        $ref: "#/definitions/Vector3"
+      scaleDelta:
+        $ref: "#/definitions/Vector3"
+  Error:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      fields:
+        type: "string"
