@@ -1,6 +1,7 @@
 from os import listdir
 from os.path import join
-
+from flask import request
+import csv
 
 def modeldata_get() -> str:
 
@@ -26,4 +27,25 @@ def modeldata_get() -> str:
 
 
 def writemodel_post(modelDelta = None) -> str:
+    upload_path = "D:\\upload"
+    upload_name = "modelDeltas.csv"
+    csv_header = "modelName, positiondeltaX, positiondeltaY, positiondeltaZ, rotationDeltaX, rotationDeltaY, rotationDeltaZ, scaleDeltaX, scaleDeltaY, scaleDeltaZ\n"
+
+    data = request.get_json()
+    model_names = list(data.keys())
+    print(model_names)
+
+    with open(join(upload_path, upload_name), "w") as file:
+        file.write(csv_header)
+        for item in data:
+            item_string = str(item)
+            # modelName, positiondeltaX, positiondeltaY, positiondeltaZ, rotationDeltaX, rotationDeltaY, rotationDeltaZ, scaleDeltaX, scaleDeltaY, scaleDeltaZ
+            print(item + ', ', data[str(item_string)]['positionDelta']['x'] + ', ', data[item_string]['positionDelta']['y'] + ', ', data[item_string]['positionDelta']['z'] + ', ')
+            row = (item + ', ' + 
+                   data[str(item_string)]['positionDelta']['x'] + ', ' + data[item_string]['positionDelta']['y'] + ', ' + data[item_string]['positionDelta']['z'] + ', ' +
+                   data[str(item_string)]['rotationDelta']['x'] + ', ' + data[item_string]['rotationDelta']['y'] + ', ' + data[item_string]['rotationDelta']['z'] + ', ' +
+                   data[str(item_string)]['scaleDelta']['x'] + ', ' + data[item_string]['scaleDelta']['y'] + ', ' + data[item_string]['scaleDelta']['z'] + ', ' + '\n')
+            print(row)
+            file.write(row)
+
     return 'do some magic!'
